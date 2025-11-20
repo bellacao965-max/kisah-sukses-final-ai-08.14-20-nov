@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>AI Chat — Pro Complete</title>
+<link rel="stylesheet" href="style.css">
+<link rel="manifest" href="manifest.json">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">AI Chat — Pro</div>
+  <div class="top-actions">
+    <button id="themeToggle" title="Toggle dark/light">🌙</button>
+    <button id="openDashboard" title="Open dashboard">📊</button>
+    <button id="exportBtn" title="Export chats">⬇️</button>
+    <input id="fileInput" type="file" title="Upload file to include in prompt" />
+  </div>
+</header>
+
+<div class="container">
+  <aside class="sidebar">
+    <div class="sidebar-head">
+      <button id="newChatBtn">+ New Chat</button>
+      <input id="searchChats" placeholder="Search chats..." />
+    </div>
+    <ul id="chatList"></ul>
+    <div class="sidebar-foot">
+      <button id="clearAll">Clear All</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div id="conversationHeader" class="conversation-header">
+      <div id="chatTitle">Welcome</div>
+      <div class="conv-actions">
+        <button id="renameChat">Rename</button>
+        <button id="deleteChat">Delete</button>
+      </div>
+    </div>
+
+    <div id="messages" class="messages"></div>
+
+    <div class="input-wrap">
+      <button id="voiceBtn" title="Voice input">🎤</button>
+      <input id="input" placeholder="Ask something..." autocomplete="off" />
+      <button id="sendBtn">Send</button>
+      <button id="ttsBtn" title="Read last message">🔊</button>
+      <button id="clearChatBtn" title="Clear conversation">🗑️</button>
+    </div>
+  </main>
+</div>
+
+<!-- Dashboard modal -->
+<div id="dashboard" class="modal hidden" role="dialog" aria-hidden="true">
+  <div class="modal-content">
+    <h3>Dashboard</h3>
+    <div id="stats"></div>
+    <button id="closeDashboard">Close</button>
+  </div>
+</div>
+
+<script src="ai.js"></script>
+</body>
+</html>
