@@ -8,6 +8,57 @@
 <link rel="manifest" href="manifest.json">
 </head>
 <body>
+  <script>
+const weatherApiKey = "ISI_API_KEY_KAMU";
+// === QUOTE HARI INI ===
+const quotes = [
+    "Kesuksesan dimulai dari langkah kecil.",
+    "Fokus hari ini menentukan hasil esok.",
+    "Jangan takut gagal, takutlah berhenti.",
+    "Hari baru, peluang baru.",
+    "Tidak ada sukses tanpa proses.",
+    "Sedikit demi sedikit menjadi bukit."
+];
+function loadDailyQuote() {
+    const today = new Date().getDate();
+    document.getElementById("quote-hari-ini").innerText =
+        quotes[today % quotes.length];
+}
+// === CUACA REALTIME ===
+function getWeather() {
+    fetch(`https://api.openweathermap.org/data/2.5/weather?q=Jakarta&appid=${weatherApiKey}&units=metric`)
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById("cuaca-real").innerHTML =
+                `Kota: ${data.name}<br>
+                 Suhu: ${data.main.temp}°C<br>
+                 Cuaca: ${data.weather[0].description}`;
+            window.actualTemp = data.main.temp;
+        })
+        .catch(() => {
+            document.getElementById("cuaca-real").innerText = "Gagal memuat cuaca";
+        });
+}
+// === GAME ===
+function guessWeather(choice) {
+    if (window.actualTemp == null) {
+        alert("Cuaca belum siap. Coba beberapa detik lagi.");
+        return;
+    }
+    const result =
+        (choice === "panas" && window.actualTemp > 30) ||
+        (choice === "dingin" && window.actualTemp <= 30)
+            ? "BENAR! 🔥"
+            : "SALAH ❌";
+    document.getElementById("weather-result").innerText =
+        `${result} Suhu sekarang ${window.actualTemp}°C`;
+}
+// === AUTO START ===
+window.onload = () => {
+    loadDailyQuote();
+    getWeather();
+};
+</script>
 <header class="topbar">
   <div class="brand">AI Chat — Pro</div>
   <div class="top-actions">
@@ -17,7 +68,6 @@
     <input id="fileInput" type="file" title="Upload file to include in prompt" />
   </div>
 </header>
-
 <div class="container">
   <aside class="sidebar">
     <div class="sidebar-head">
@@ -29,7 +79,6 @@
       <button id="clearAll">Clear All</button>
     </div>
   </aside>
-
   <main class="main">
     <div id="conversationHeader" class="conversation-header">
       <div id="chatTitle">Welcome</div>
@@ -38,9 +87,7 @@
         <button id="deleteChat">Delete</button>
       </div>
     </div>
-
     <div id="messages" class="messages"></div>
-
     <div class="input-wrap">
       <button id="voiceBtn" title="Voice input">🎤</button>
       <input id="input" placeholder="Ask something..." autocomplete="off" />
@@ -50,7 +97,6 @@
     </div>
   </main>
 </div>
-
 <!-- Dashboard modal -->
 <div id="dashboard" class="modal hidden" role="dialog" aria-hidden="true">
   <div class="modal-content">
@@ -59,7 +105,6 @@
     <button id="closeDashboard">Close</button>
   </div>
 </div>
-
 <script src="ai.js"></script>
 </body>
 </html>
