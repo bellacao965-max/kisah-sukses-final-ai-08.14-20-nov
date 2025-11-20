@@ -2,16 +2,19 @@ import express from "express";
 import Groq from "groq-sdk";
 import dotenv from "dotenv";
 import cors from "cors";
-import path from "path";
 
 dotenv.config();
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-const __dirname = path.resolve();
+// Serve frontend from root
+app.use(express.static(process.cwd()));
 
-// AI CONFIG
+app.get("/", (req, res) => {
+  res.sendFile(process.cwd() + "/index.html");
+});
+
 const GROQ_API_KEY = process.env.GROQ_API_KEY || "";
 const MODEL = process.env.MODEL || "llama3-70b-8192";
 
@@ -21,10 +24,10 @@ if (GROQ_API_KEY) {
     groq = new Groq({ apiKey: GROQ_API_KEY });
   } catch (e) {
     console.warn("Could not initialize Groq SDK:", e.message);
+    groq = null;
   }
 }
 
-// AI ENDPOINT
 app.post("/api/ai", async (req, res) => {
   try {
     const { prompt } = req.body || {};
@@ -40,7 +43,7 @@ app.post("/api/ai", async (req, res) => {
         const reply =
           completion?.choices?.[0]?.message?.content ||
           completion?.choices?.[0]?.text ||
-          JSON.stringify(completion);
+          "(no reply from model)";
 
         return res.json({ reply });
       } catch (aiErr) {
@@ -48,16 +51,15 @@ app.post("/api/ai", async (req, res) => {
       }
     }
 
-    return res.json({
-      reply: `(fallback) Tidak ada koneksi AI. Tambahkan GROQ_API_KEY di Render.`
-    });
+    const fallbackReply = `(fallback) Prompt diterima: "${String(prompt).slice(0,200)}". Set GROQ_API_KEY untuk mengaktifkan AI.`;
+    return res.json({ reply: fallbackReply });
   } catch (err) {
     console.error("Server error:", err);
-    res.status(500).json({ error: "Server error" });
+    res.status(500).json({ error: "Server error", detail: String(err) });
   }
 });
 
-// CONFIG FOR FRONTEND
+// CONFIG
 app.get("/config", (req, res) => {
   res.json({
     youtubeVideoId: process.env.YOUTUBE_VIDEO_ID || "",
@@ -70,14 +72,5 @@ app.get("/config", (req, res) => {
   });
 });
 
-// STATIC PUBLIC FOLDER
-app.use(express.static(path.join(__dirname, "public")));
-
-// FALLBACK TO index.html
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
-});
-
-// START SERVER
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log("Server RUNNING on port " + PORT));
