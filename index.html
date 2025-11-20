@@ -1,110 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>AI Chat — Pro Complete</title>
-<link rel="stylesheet" href="style.css">
-<link rel="manifest" href="manifest.json">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kisah Sukses AI</title>
+
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <script>
-const weatherApiKey = "ISI_API_KEY_KAMU";
-// === QUOTE HARI INI ===
-const quotes = [
-    "Kesuksesan dimulai dari langkah kecil.",
-    "Fokus hari ini menentukan hasil esok.",
-    "Jangan takut gagal, takutlah berhenti.",
-    "Hari baru, peluang baru.",
-    "Tidak ada sukses tanpa proses.",
-    "Sedikit demi sedikit menjadi bukit."
-];
-function loadDailyQuote() {
-    const today = new Date().getDate();
-    document.getElementById("quote-hari-ini").innerText =
-        quotes[today % quotes.length];
-}
-// === CUACA REALTIME ===
-function getWeather() {
-    fetch(`https://api.openweathermap.org/data/2.5/weather?q=Jakarta&appid=${weatherApiKey}&units=metric`)
-        .then(res => res.json())
-        .then(data => {
-            document.getElementById("cuaca-real").innerHTML =
-                `Kota: ${data.name}<br>
-                 Suhu: ${data.main.temp}°C<br>
-                 Cuaca: ${data.weather[0].description}`;
-            window.actualTemp = data.main.temp;
-        })
-        .catch(() => {
-            document.getElementById("cuaca-real").innerText = "Gagal memuat cuaca";
-        });
-}
-// === GAME ===
-function guessWeather(choice) {
-    if (window.actualTemp == null) {
-        alert("Cuaca belum siap. Coba beberapa detik lagi.");
-        return;
-    }
-    const result =
-        (choice === "panas" && window.actualTemp > 30) ||
-        (choice === "dingin" && window.actualTemp <= 30)
-            ? "BENAR! 🔥"
-            : "SALAH ❌";
-    document.getElementById("weather-result").innerText =
-        `${result} Suhu sekarang ${window.actualTemp}°C`;
-}
-// === AUTO START ===
-window.onload = () => {
-    loadDailyQuote();
-    getWeather();
-};
-</script>
-<header class="topbar">
-  <div class="brand">AI Chat — Pro</div>
-  <div class="top-actions">
-    <button id="themeToggle" title="Toggle dark/light">🌙</button>
-    <button id="openDashboard" title="Open dashboard">📊</button>
-    <button id="exportBtn" title="Export chats">⬇️</button>
-    <input id="fileInput" type="file" title="Upload file to include in prompt" />
-  </div>
-</header>
-<div class="container">
-  <aside class="sidebar">
-    <div class="sidebar-head">
-      <button id="newChatBtn">+ New Chat</button>
-      <input id="searchChats" placeholder="Search chats..." />
-    </div>
-    <ul id="chatList"></ul>
-    <div class="sidebar-foot">
-      <button id="clearAll">Clear All</button>
-    </div>
-  </aside>
-  <main class="main">
-    <div id="conversationHeader" class="conversation-header">
-      <div id="chatTitle">Welcome</div>
-      <div class="conv-actions">
-        <button id="renameChat">Rename</button>
-        <button id="deleteChat">Delete</button>
-      </div>
-    </div>
-    <div id="messages" class="messages"></div>
-    <div class="input-wrap">
-      <button id="voiceBtn" title="Voice input">🎤</button>
-      <input id="input" placeholder="Ask something..." autocomplete="off" />
-      <button id="sendBtn">Send</button>
-      <button id="ttsBtn" title="Read last message">🔊</button>
-      <button id="clearChatBtn" title="Clear conversation">🗑️</button>
-    </div>
-  </main>
-</div>
-<!-- Dashboard modal -->
-<div id="dashboard" class="modal hidden" role="dialog" aria-hidden="true">
-  <div class="modal-content">
-    <h3>Dashboard</h3>
-    <div id="stats"></div>
-    <button id="closeDashboard">Close</button>
-  </div>
-</div>
-<script src="ai.js"></script>
+
+  <header>
+    <h1>Kisah Sukses AI</h1>
+    <p>Your personal AI assistant.</p>
+  </header>
+
+  <!-- AI CHAT SECTION -->
+  <section id="ai-box">
+    <h2>AI Chat</h2>
+
+    <textarea id="userInput" placeholder="Tulis pertanyaan..."></textarea>
+    <button id="sendBtn">Kirim</button>
+
+    <div id="aiResponse"></div>
+  </section>
+
+  <!-- YOUTUBE VIDEO -->
+  <section id="youtube">
+    <h2>Video Motivasi Hari Ini</h2>
+    <iframe id="yt-frame" width="100%" height="220" frameborder="0" allowfullscreen></iframe>
+  </section>
+
+  <!-- QUOTE HARI INI -->
+  <section id="quoteBox">
+    <h2>Quote Hari Ini</h2>
+    <p id="quoteText">Loading quote...</p>
+  </section>
+
+  <!-- CUACA -->
+  <section id="weatherBox">
+    <h2>Cuaca</h2>
+    <input id="weatherCity" placeholder="Nama kota..." />
+    <button onclick="getWeather()">Cek Cuaca</button>
+
+    <p id="weatherResult"></p>
+  </section>
+
+  <!-- GAME -->
+  <section id="gameBox">
+    <h2>Tebak Angka (1–10)</h2>
+    <input id="guessInput" placeholder="Tebak angka..." />
+    <button onclick="checkGuess()">Cek</button>
+    <p id="gameResult"></p>
+  </section>
+
+  <script src="script.js"></script>
+  <script src="weather.js"></script>
+  <script src="game.js"></script>
+
 </body>
 </html>
