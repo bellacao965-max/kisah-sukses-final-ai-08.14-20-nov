@@ -14,8 +14,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Serve static files correctly
-app.use(express.static(__dirname));
+// Serve public folder
+app.use(express.static(path.join(__dirname, "public")));
 
 // ---- AI API ----
 const GROQ_API_KEY = process.env.GROQ_API_KEY || "";
@@ -47,30 +47,30 @@ app.post("/api/ai", async (req, res) => {
     }
 
     return res.json({
-      reply: "(fallback) Groq API KEY is missing"
+      reply: "(fallback) Groq API KEY missing."
     });
   } catch (e) {
-    res.json({ reply: "(fallback) AI error: " + e.message });
+    res.json({ reply: "AI error: " + e.message });
   }
 });
 
-// ---- CONFIG API ----
+// Config API route
 app.get("/config", (req, res) => {
   res.json({
-    youtubeVideoId: process.env.YOUTUBE_VIDEO_ID || "",
+    youtubeVideoId: process.env.YOUTUBE_VIDEO_ID || "dQw4w9WgXcQ",
     social: {
-      twitter: process.env.SOCIAL_TWITTER || "",
-      instagram: process.env.SOCIAL_INSTAGRAM || "",
-      facebook: process.env.SOCIAL_FACEBOOK || "",
-      youtubeChannel: process.env.SOCIAL_YOUTUBE || ""
+      twitter: process.env.SOCIAL_TWITTER || "https://twitter.com",
+      instagram: process.env.SOCIAL_INSTAGRAM || "https://instagram.com",
+      facebook: process.env.SOCIAL_FACEBOOK || "https://facebook.com",
+      youtubeChannel: process.env.SOCIAL_YOUTUBE || "https://youtube.com"
     }
   });
 });
 
-// ---- FALLBACK: return index.html ALWAYS ----
+// Fallback → always return index.html
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));
+  res.sendFile(path.join(__dirname, "public/index.html"));
 });
 
 const PORT = process.env.PORT || 10000;
-app.listen(PORT, () => console.log("Server running on port " + PORT));
+app.listen(PORT, () => console.log("SERVER running on port " + PORT));
